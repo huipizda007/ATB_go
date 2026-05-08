@@ -1,4 +1,4 @@
-module github.com/nochzato/example
+module github.com/huipizda007/ATB_go
 
 go 1.23.0
 
