@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"rrieye/db"
+	"github.com/huipizda007/ATB_go/db/sqlc"
 )
 
 type Server struct {

@@ -11,15 +11,25 @@ import (
 )
 
 func main() {
-	connPool, err := pgxpool.New(context.Background(), "postgresql://postgres:postgres@localhost:5432/api_db")
+	connStr := "postgresql://postgres:postgres@127.0.0.1:5432/fruits?sslmode=disable"
+	connPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 	defer connPool.Close()
 
-	store := db.NewStore(connPool)
+	err = connPool.Ping(context.Background())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Ping failed: %v\n", err)
+		os.Exit(1)
+	}
 
+	fmt.Println("Successfully connected to the database!")
+
+	store := db.NewStore(connPool)
 	server := server.NewServer(store)
+	
+	fmt.Println("Starting server on :3000...")
 	server.Run(":3000")
 }
