@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS fruits (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    brand TEXT,
+    price_per_kg NUMERIC(10, 2),
+    stock_kg INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -6,6 +6,15 @@ info:
 http:
   method: POST
   url: http://localhost:3000/fruits
+  body:
+    type: json
+    data: |-
+      {
+          "name": "Яблуко",
+          "brand": "Голден",
+          "price_per_kg": 35.50,
+          "stock_kg": 100
+      }
   auth: inherit
 
 settings:
