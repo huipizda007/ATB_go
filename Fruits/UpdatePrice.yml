@@ -6,6 +6,12 @@ info:
 http:
   method: PATCH
   url: http://localhost:3000/fruits/1/price
+  body:
+    type: json
+    data: |-
+      {
+        "price": "42"
+      }
   auth: inherit
 
 settings:

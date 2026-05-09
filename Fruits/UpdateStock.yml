@@ -6,6 +6,12 @@ info:
 http:
   method: PATCH
   url: http://localhost:3000/fruits/1/stock
+  body:
+    type: json
+    data: |-
+      {
+        "stock": 400
+      }
   auth: inherit
 
 settings:
