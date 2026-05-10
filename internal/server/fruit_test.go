@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	db "github.com/huipizda007/ATB_go/db/sqlc"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type mockStore struct {
@@ -58,8 +57,8 @@ func TestHandleCreateFruit(t *testing.T) {
 
 	body := map[string]interface{}{
 		"name":         "Яблуко",
-		"brand":        map[string]interface{}{"String": "Голден", "Valid": true},
-		"price_per_kg": "35.50",
+		"brand":        "Голден",
+		"price_per_kg": 35.50,
 		"stock_kg":     100,
 	}
 	jsonBody, _ := json.Marshal(body)
@@ -70,7 +69,7 @@ func TestHandleCreateFruit(t *testing.T) {
 	server.router.ServeHTTP(w, req)
 
 	if w.Code != http.StatusCreated {
-		t.Errorf("Очікувався статус %d, отримано %d", http.StatusCreated, w.Code)
+		t.Errorf("Очікувався статус %d, отримано %d. Причина: %s", http.StatusCreated, w.Code, w.Body.String())
 	}
 }
 

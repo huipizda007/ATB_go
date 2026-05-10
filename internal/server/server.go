@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/huipizda007/ATB_go/db/sqlc"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Server struct {
@@ -42,6 +43,15 @@ func (s *Server) handleCreateFruit(w http.ResponseWriter, r *http.Request) {
 	var arg db.CreateFruitParams
 	if err := json.NewDecoder(r.Body).Decode(&arg); err != nil {
 		s.errorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if strings.TrimSpace(arg.Name) == "" {
+		s.errorResponse(w, http.StatusBadRequest, "Помилка: Назва фрукта не може бути порожньою")
+		return
+	}
+	if arg.StockKg < 0 {
+		s.errorResponse(w, http.StatusBadRequest, "Помилка: Кількість на складі не може бути від'ємною")
 		return
 	}
 
@@ -113,6 +123,15 @@ func (s *Server) handleUpdateFruitPrice(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if strings.TrimSpace(req.Price) == "" {
+		s.errorResponse(w, http.StatusBadRequest, "Помилка: Ціна не може бути порожньою")
+		return
+	}
+	if priceFloat, err := strconv.ParseFloat(req.Price, 64); err == nil && priceFloat <= 0 {
+		s.errorResponse(w, http.StatusBadRequest, "Помилка: Ціна має бути більшою за нуль")
+		return
+	}
+
 	var numericPrice pgtype.Numeric
 	numericPrice.Scan(req.Price)
 
@@ -147,6 +166,11 @@ func (s *Server) handleUpdateFruitStock(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if req.Stock < 0 {
+		s.errorResponse(w, http.StatusBadRequest, "Помилка: Кількість на складі не може бути від'ємною")
+		return
+	}
+
 	arg := db.UpdateFruitStockParams{
 		ID:      id,
 		StockKg: req.Stock,
@@ -168,9 +192,3 @@ func (s *Server) writeJSON(w http.ResponseWriter, status int, data interface{}) 
 }
 
 func (s *Server) errorResponse(w http.ResponseWriter, status int, message string) {
-	s.writeJSON(w, status, map[string]string{"error": message})
-}
-
-func (s *Server) Run(port string) {
-	http.ListenAndServe(port, s.router)
-}
